@@ -1,3 +1,23 @@
+/*
+ * Copyright 2012 University of Helsinki.
+ *
+ * This file is part of BMVis.
+ *
+ * BMVis is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * BMVis is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with BMVis.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 package biomine.bmvis;
 
 import biomine.bmgraph.BMGraph;
@@ -78,18 +98,7 @@ import javax.swing.filechooser.FileFilter;
 
 /**
  * Biomine graph visualization.
- * 
- * Note: this has been under some plugin-related changes recently by Lauri.
- * The aim was to keep this class as intact as possible and do everything
- * in a plugin-aware subclass. Unfortunately, it turned out some changes
- * were required here also. This is unfortunate, as BMVis is currently under
- * heavy refactoring and merging the versions could be painful.
- * 
- * The aim is to proceed so that once Kimmo's refactoring of this class
- * is finished, Kimmo and Lauri shall coordinatedly check how the changes made here
- * shall be migrated to the new implementation. For a list of performed changes, 
- * see (sub)class biomine.bmvispluginsBMVIS_lauri.
- * 
+ *
  * @author Kimmo Kulovesi
  */
 
@@ -122,7 +131,7 @@ public class BMVis extends JApplet {
      * Name of the graph in the Visualization.
      */
     public static final String GRAPH = "graph";
-    
+
     /**
      * Name of the graph nodes in the Visualization.
      */
@@ -216,12 +225,12 @@ public class BMVis extends JApplet {
      * Should we enable automatic layout.
      */
     public boolean enableAutomaticLayout;
-    
+
     /**
      * Should we pin stationary (that is, converged) nodes automatically.
      */
-    protected boolean freezeLayout; 
-    
+    protected boolean freezeLayout;
+
     protected class BMGraphWindow extends JFrame {
         public BMGraphWindow (String title) {
             super(title);
@@ -293,7 +302,7 @@ public class BMVis extends JApplet {
      */
 
     public void pinAll (Iterator<VisualItem> iterator) {
-        changed = true;        
+        changed = true;
         while (iterator.hasNext()) {
             VisualItem elem = iterator.next();
             elem.setFixed(false);
@@ -362,7 +371,7 @@ public class BMVis extends JApplet {
     public PrefuseBMGraph getGraph () {
         return prefuseBMGraph;
     }
-    
+
     public BMGraph getBMGraph () {
         return bmgraph;
     }
@@ -381,11 +390,11 @@ public class BMVis extends JApplet {
     public void allowLayoutFreezing() {
     	if (freezeLayout) layoutEngine.setFreezeStationary(true);
     }
-    
+
     public void disallowLayoutFreezing() {
     	layoutEngine.setFreezeStationary(false);
     }
-    
+
     /**
      * Get the Display used by this applet/application.
      * @return The Display in use.
@@ -423,7 +432,7 @@ public class BMVis extends JApplet {
                 // error state
             }
         }
-        
+
         // Why had the menubar has to be removed, as was done below? (Lauri)
         // Modified this so that menubar is preserved when loading a new graph,
         // and the old menubar must not be disposed of, as is done here...
@@ -445,7 +454,7 @@ public class BMVis extends JApplet {
     public List<BMNode> getSelectedNodes() {
         LinkedList<BMNode> result = new LinkedList();
         Iterator<VisualItem> iter = vis.items(SELECT_GROUP,
-                                              REALNODE_PREDICATE);        
+                                              REALNODE_PREDICATE);
         VisualItem item;
         while (iter.hasNext()) {
             item = iter.next();
@@ -456,43 +465,43 @@ public class BMVis extends JApplet {
         }
         return result;
     }
-    
+
     private VisualItem getVisualItem (String nodeID) throws ParseException {
     	BMNode bmn = getGraph().getBMGraph().getNode(nodeID);
     	return getVisualization().getVisualItem(BMVis.GRAPH_NODES, prefuseBMGraph.getPrefuseNode(bmn));
     }
-    
+
 //    public void setNodeHighlight (String nodeID, boolean highlighted) throws ParseException {
 //    	getVisualItem(nodeID).setHighlighted(highlighted);
 //    }
-    
+
     /** This is to be used from JavaScript to "highlight" nodes. */
     public void setSelectedNodes (String[] selectedIDs) {
     	TupleSet select = vis.getFocusGroup(SELECT_GROUP);
     	select.clear();
-    	
+
     	for (String s: selectedIDs) {
     		try {
     			select.addTuple(getVisualItem(s));
     		} catch (ParseException pe) {
     			System.err.println(pe.toString() + " while trying to resolve \"" + s + "\".");
     		}
-    	}    	
+    	}
     }
-    
+
     public void zoomToSelected () {
     	control.zoomToFit(SELECT_GROUP);
     }
-    
+
     public void zoomToNodes (String[] nodeIDs) throws ParseException {
     	String groupName = nodeIDs.toString();
     	try {
     		vis.addFocusGroup(groupName);
     	} catch (Exception e) {}
-    	
+
     	TupleSet temp = vis.getFocusGroup(groupName);
     	temp.clear();
-    	
+
     	for (String s: nodeIDs) {
     		try {
     			temp.addTuple(getVisualItem(s));
@@ -502,17 +511,17 @@ public class BMVis extends JApplet {
     	}
     	control.zoomToFit(groupName);
     }
-    
-    
+
+
     public boolean loadChosenGraph () {
         File file = fileChooser.getSelectedFile();
         if (file == null)
             return false;
         return loadGraph(file);
     }
-    
+
     public boolean loadGraph (File file) {
-                
+
         do {
             unloadGraph();
             graphLocation = file;
@@ -649,8 +658,8 @@ public class BMVis extends JApplet {
             System.err.println("Error opening URL:" + e.getMessage());
         }
     }
-    
-    
+
+
     private abstract class LabelChangeAction extends AbstractAction {
         protected String label;
         public LabelChangeAction (String l) { super(l); label = l; }
@@ -726,7 +735,7 @@ public class BMVis extends JApplet {
                 "Warnings while loading BMGraph", JOptionPane.WARNING_MESSAGE);
         }
         bmgraph = reader.getGraph();
-        
+
         //If initial positions are not set
         //they are solved used initial.GraphLayout.solvePositions
         //(Aleksi)
@@ -744,7 +753,7 @@ public class BMVis extends JApplet {
                 node.put(PrefuseBMGraph.PINNED_KEY, "1");
             }
         }
-		
+
         try {
             prefuseBMGraph = new PrefuseBMGraph(bmgraph);
         } catch (Exception e) {
@@ -777,7 +786,7 @@ public class BMVis extends JApplet {
         vis.addFocusGroup(SELECT_GROUP);
 
         nodeRenderer = new BMNodeLabelRenderer(this,
-                    hideNodeTypes ? null : DEFAULT_NODE_SUBLABEL, 
+                    hideNodeTypes ? null : DEFAULT_NODE_SUBLABEL,
                     DEFAULT_EDGE_LABEL);
         arrowRenderer = new ArrowEdgeRenderer();
         arrowRenderer.setEdgeDirection(NodeLabelRenderer.EdgeDirection.CANONICAL);
@@ -819,7 +828,7 @@ public class BMVis extends JApplet {
         ForceDirectedLayout quickLayoutEngine;
         quickLayoutEngine = new ForceDirectedLayout(GRAPH, fsim, false, true);
         quickLayoutEngine.setIterations(50);
-        
+
         control = new VisualControl(this);
         display.addControlListener(control);
 
@@ -901,7 +910,7 @@ public class BMVis extends JApplet {
         layoutEnabled = true;
 
         // create menus (only the first time!)
-        
+
         if (createMenus) {
             JMenu menu = new JMenu("Layout");
             menubar.add(menu);
@@ -931,7 +940,7 @@ public class BMVis extends JApplet {
                     unPinAll(vis.items());
                 }
             }));
-    
+
             if (developerMode) {
                 menu.addSeparator();
                 menu.add(new JMenuItem(new AbstractAction("Re-layout all") {
@@ -950,24 +959,24 @@ public class BMVis extends JApplet {
                         vis.run(SPECIFIED_LAYOUT);
                     }
                 }));
-        
+
                 menu.addSeparator();
                 menu.add(new JMenuItem(new AbstractAction("Force-simulator setup...")
                 {
-                    public void actionPerformed (ActionEvent e) {                   	
+                    public void actionPerformed (ActionEvent e) {
                         JDialog jf = new JDialog();
                         jf.setTitle("BMVis Layout Forces");
                         jf.add(new JForcePanel(layoutEngine.getForceSimulator()),
-                        		BorderLayout.NORTH);                      
+                        		BorderLayout.NORTH);
                         jf.pack();
                         jf.setVisible(true);
                         jf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                     }
                 }));
             }
-            
+
             menu.addSeparator();
-            
+
             JCheckBoxMenuItem checkbox = new JCheckBoxMenuItem(
                 new AbstractAction("Auto-pin after drag") {
                     public void actionPerformed (ActionEvent e) {
@@ -976,7 +985,7 @@ public class BMVis extends JApplet {
                 });
             menu.add(checkbox);
             checkbox.setSelected(control.autoPin);
-            
+
 			checkbox = new JCheckBoxMenuItem(new AbstractAction(
 					"Enable automatic layout") {
 				public void actionPerformed(ActionEvent e) {
@@ -988,7 +997,7 @@ public class BMVis extends JApplet {
             enableAutomaticLayout = true;
             setLayoutEnabled(enableAutomaticLayout);
             checkbox.setSelected(enableAutomaticLayout);
-            
+
             checkbox = new JCheckBoxMenuItem(
             		new AbstractAction("Freeze stationary layout") {
             			public void actionPerformed(ActionEvent e) {
@@ -1002,7 +1011,7 @@ public class BMVis extends JApplet {
             menu.add(checkbox);
             freezeLayout = true;
             checkbox.setSelected(freezeLayout);
-           
+
             menu = new JMenu("Labels");
             menubar.add(menu);
             JMenu submenu = new JMenu("Node labels");
@@ -1042,8 +1051,8 @@ public class BMVis extends JApplet {
                     checkbox.setText(attributeName);
                     submenu.add(checkbox);
                 }
-            }        
-            
+            }
+
             submenu = new JMenu("Edge labels");
             menu.add(submenu);
             attributes = prefuseBMGraph.getViewableEdgeAttributes();
@@ -1173,7 +1182,7 @@ public class BMVis extends JApplet {
                     while (iter.hasNext())
                         select.removeTuple(iter.next());
                     notifySelectionChanged();
-                        
+
                 }
             }));
 
@@ -1202,14 +1211,14 @@ public class BMVis extends JApplet {
                     openURL(BIOMINE_URL);
                 }
             }));
-    
+
             /////////////////////
             // added by Lauri:
             addPluginMenus();
             setMnemonicsAndAccelerators();
             /////////////////////
         } // end of menu creation
-        
+
         // Show window and zoom
 
         graphWindow.add(display);
@@ -1231,7 +1240,7 @@ public class BMVis extends JApplet {
         changed = false;
         layoutEngine.setFreezeStationary(freezeLayout);
         notifyGraphLoaded();
-        
+
         return true;
     }
 
@@ -1239,12 +1248,12 @@ public class BMVis extends JApplet {
     protected void addPluginMenus() {
         // no action by default
     }
-    
+
     // in the current (temporary) scheme, the subclass managing the plugins shall override this */
     protected void setMnemonicsAndAccelerators() {
         // no action by default
     }
-    
+
     public class GraphFileFilter extends FileFilter {
         public boolean accept (File f) {
             if (f.isDirectory())
@@ -1296,25 +1305,25 @@ public class BMVis extends JApplet {
         initWindow();
     }
 
-    /** Overridden by subclass to notify plugins about a new graph being loaded */  
+    /** Overridden by subclass to notify plugins about a new graph being loaded */
     protected void notifyGraphLoaded() {
         // no action
     }
-    
+
     /**
-     * Overridden by subclass to notify plugins about bmvis being about to 
+     * Overridden by subclass to notify plugins about bmvis being about to
      * quit. The current graph should already have been saved (if applicable)
-     * before this gets called. 
+     * before this gets called.
      */
     public void notifyBeforeExit() {
         // no action
     }
-    
-    /** Overridden by subclass to notify plugins about a change in the selection */  
+
+    /** Overridden by subclass to notify plugins about a change in the selection */
     protected void notifySelectionChanged() {
         // no action
     }
-    
+
     public void init () {
         appletContext = getAppletContext();
         if (appletContext == null) {
@@ -1359,12 +1368,12 @@ public class BMVis extends JApplet {
         filename = filename.replaceFirst("[.][A-Za-z]*$", "");
         setWindowTitle(filename + (title == null ? "" : " - " + title));
     }
-        
+
 
     public boolean saveGraph () {
         return saveGraph(graphLocation);
     }
-    
+
     public boolean saveGraph (File file) {
         PrintStream output;
         try {
@@ -1409,7 +1418,7 @@ public class BMVis extends JApplet {
             }
         }
     }
-    
+
     private void saveAsDialog () {
         if (prefuseBMGraph == null)
             return;
@@ -1499,7 +1508,7 @@ public class BMVis extends JApplet {
             }
         }));
     }
-    
+
     private void createGUI (String title) {
         try {
             System.setProperty("com.apple.macosx.AntiAliasedTextOn", "false");
