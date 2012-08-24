@@ -54,10 +54,6 @@ import biomine.bmgraph.BMEntity;
  * Mouse control. Includes clicking, dragging, zooming, panning,
  * selection and hovering.
  * 
- * Added notifying bmvis about selection changes on 11.12.2008 (Lauri).
- * Please discard these, if merging turns out to be a problem, hopefully
- * implementing a replacement also at the same time:) 
- * 
  * @author Kimmo Kulovesi
  */
 
