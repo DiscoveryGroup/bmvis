@@ -13,5 +13,6 @@ bmgraph-java.  In other words, if BMVis sources are at
 
 Copyright 2012 University of Helsinki.
 
-BMVis is free software.  See the files COPYING and COPYING.LESSER for
-copying conditions.
+BMVis is free software licensed under the GNU Lesser General Public
+License (LGPL).  See the files COPYING and COPYING.LESSER for copying
+conditions.
