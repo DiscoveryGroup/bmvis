@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biomine.bmvis</groupId>
+  <artifactId>bmvis</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <dependencies>
+    <dependency> 
+      <groupId>org.prefuse</groupId> 
+      <artifactId>prefuse</artifactId> 
+      <version>beta-20071021</version>
+    </dependency>
+
+    <dependency>
+      <groupId>biomine.bmgraph</groupId> 
+      <artifactId>bmgraph</artifactId> 
+      <version>1.0-SNAPSHOT</version> 
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+	<artifactId>maven-assembly-plugin</artifactId>
+	<version>2.2-beta-5</version>
+	<executions>
+	  <execution>
+	    <id>package-all</id>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>single</goal>
+	    </goals>
+	    <configuration>
+
+	      <descriptors>
+		<descriptor>src/main/assembly/monolithic.xml</descriptor>
+	      </descriptors>
+
+	      <archive>
+		<manifest>
+		  <mainClass>biomine.bmvis.BMVis</mainClass>
+		</manifest>
+	      </archive>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
