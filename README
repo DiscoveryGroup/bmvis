@@ -3,15 +3,17 @@ This is BMVis, an interactive graph visualization program.
 BMVis depends on bmgraph-java, which is available at
 https://github.com/DiscoveryGroup/bmgraph-java.
 
-When bmgraph-java is installed into the local artifact repository,
-one can build bmvis simply by running Maven:
-  mvn package
+When bmgraph-java is installed into the local artifact repository, one
+can build bmvis simply by running Maven:
+
+    mvn package
+
 or alternatively use some other build system and include the
-bmgraph-java sources in the build.  The classes need to be there
-at both compile and at run time.  In addition to bmgraph-java,
-BMVis depends on the included prefuse.jar JAR-file in the lib
-directory.  The provided Maven build uses another (?) version from
-the global artifact repository.
+bmgraph-java sources in the build.  The classes need to be there at
+both compile and at run time.  In addition to bmgraph-java, BMVis
+depends on the included prefuse.jar file in the lib directory.  The
+provided Maven build fetches and uses prefuse.jar the global artifact
+repository.
 
 Copyright 2012 University of Helsinki.
 
